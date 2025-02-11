@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_backend.dart';
-import 'app_frontend.dart';
+import 'app_frontend.dart'; // Импортируем frontend
 
 void main() {
   runApp(SnookerApp());
@@ -16,7 +15,7 @@ class SnookerApp extends StatelessWidget {
         primarySwatch: Colors.green,
         fontFamily: 'Arial',
       ),
-      home: SnookerStatsPage(gameLogic: SnookerGameLogic()),
+      home: SnookerStatsPage(), // Используем SnookerStatsPage из frontend
     );
   }
 }

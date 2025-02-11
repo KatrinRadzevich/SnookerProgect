@@ -1,328 +1,272 @@
 import 'package:flutter/material.dart';
-import 'app_backend.dart';
+import 'app_backend.dart'; // Импортируем backend
 
 class SnookerStatsPage extends StatefulWidget {
-  final SnookerGameLogic gameLogic;
-
-  SnookerStatsPage({required this.gameLogic});
-
   @override
   _SnookerStatsPageState createState() => _SnookerStatsPageState();
 }
 
 class _SnookerStatsPageState extends State<SnookerStatsPage> {
+  // Получаем доступ к SnookerGameState через экземпляр
+  final SnookerGameState gameState = SnookerGameState();
+
   @override
   Widget build(BuildContext context) {
+    double screenWidth =
+        MediaQuery.of(context).size.width; // Получаем ширину экрана
+    double screenHeight =
+        MediaQuery.of(context).size.height; // Получаем высоту экрана
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text('Snooker.Statistics of Success')),
       backgroundColor: Colors.grey[100],
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(
+            screenWidth / 20.0), // Адаптивный padding для всего body
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: 2),
-            _buildPlayerNames(),
-            SizedBox(height: 15),
-            Expanded(child: _buildStatistics()),
-            SizedBox(height: 10),
-            _buildUndoButton(),
-            SizedBox(height: 10),
-            _buildAllPottedBalls(),
-            SizedBox(height: 20),
-            _buildResetButtons(),
+            SizedBox(height: screenHeight / 300), // Адаптивный отступ
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: gameState.player1Name,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Player 1',
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: screenHeight / 140), // Адаптивный отступ
+                    ),
+                  ),
+                ),
+                SizedBox(width: screenWidth / 20), // Адаптивный отступ
+                Expanded(
+                  child: TextField(
+                    controller: gameState.player2Name,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Player 2',
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: screenHeight / 140), // Адаптивный отступ
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: screenHeight / 140), // Адаптивный отступ
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        buildShotStat(
+                          "Pot Success",
+                          gameState.player1PotSuccessShots,
+                          gameState.player1PotSuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer1PotSuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer1PotAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                        buildShotStat(
+                          "Long Pot Success",
+                          gameState.player1LongPotSuccessShots,
+                          gameState.player1LongPotSuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer1LongPotSuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer1LongPotAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                        buildShotStat(
+                          "Rest Pot Success",
+                          gameState.player1RestPotSuccessShots,
+                          gameState.player1RestPotSuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer1RestPotSuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer1RestPotAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                        buildShotStat(
+                          "Safety Success",
+                          gameState.player1SafetySuccessShots,
+                          gameState.player1SafetySuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer1SafetySuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer1SafetyAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                      ],
+                    ),
+                  ),
+                  VerticalDivider(),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        buildShotStat(
+                          "Pot Success",
+                          gameState.player2PotSuccessShots,
+                          gameState.player2PotSuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer2PotSuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer2PotAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                        buildShotStat(
+                          "Long Pot Success",
+                          gameState.player2LongPotSuccessShots,
+                          gameState.player2LongPotSuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer2LongPotSuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer2LongPotAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                        buildShotStat(
+                          "Rest Pot Success",
+                          gameState.player2RestPotSuccessShots,
+                          gameState.player2RestPotSuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer2RestPotSuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer2RestPotAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                        buildShotStat(
+                          "Safety Success",
+                          gameState.player2SafetySuccessShots,
+                          gameState.player2SafetySuccessAttempts,
+                          () => setState(
+                              () => gameState.increasePlayer2SafetySuccess()),
+                          () => setState(
+                              () => gameState.increasePlayer2SafetyAttempt()),
+                          screenWidth: screenWidth, // Передаем screenWidth
+                          screenHeight: screenHeight, // Передаем screenHeight
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: screenHeight / 800), // Адаптивный отступ
+            ElevatedButton(
+              onPressed: () => setState(() => gameState.undo()),
+              child: Text("Undo",
+                  style: TextStyle(
+                      fontSize: screenWidth / 23,
+                      color: Colors.black)), // Адаптивный размер шрифта
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 158, 107, 213),
+                padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth / 12,
+                    vertical: screenHeight / 100), // Адаптивные отступы
+              ),
+            ),
+            SizedBox(height: screenHeight / 60), // Адаптивный отступ
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () => setState(() => gameState.resetPlayer1()),
+                    child: Text("Reset P1",
+                        style: TextStyle(
+                            fontSize:
+                                screenWidth / 30))), // Адаптивный размер шрифта
+                ElevatedButton(
+                    onPressed: () => setState(() => gameState.resetAll()),
+                    child: Text("Reset All",
+                        style: TextStyle(
+                            fontSize:
+                                screenWidth / 30))), // Адаптивный размер шрифта
+                ElevatedButton(
+                    onPressed: () => setState(() => gameState.resetPlayer2()),
+                    child: Text("Reset P2",
+                        style: TextStyle(
+                            fontSize:
+                                screenWidth / 30))), // Адаптивный размер шрифта
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  /// Строит поля для ввода имен игроков
-  Widget _buildPlayerNames() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: widget.gameLogic.player1Name,
-            textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Player 1',
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
-            ),
-          ),
-        ),
-        SizedBox(width: 20),
-        Expanded(
-          child: TextField(
-            controller: widget.gameLogic.player2Name,
-            textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Player 2',
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Строит статистику для обоих игроков
-  Widget _buildStatistics() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: _buildPlayerStats(widget.gameLogic, true)),
-        VerticalDivider(),
-        Expanded(child: _buildPlayerStats(widget.gameLogic, false)),
-      ],
-    );
-  }
-
-  /// Строит статистику для одного игрока
-  Widget _buildPlayerStats(SnookerGameLogic gameLogic, bool isPlayer1) {
-    return Column(
-      children: [
-        _buildShotStat(
-          "Pot Success",
-          isPlayer1
-              ? gameLogic.player1PotSuccessShots
-              : gameLogic.player2PotSuccessShots,
-          isPlayer1
-              ? gameLogic.player1PotSuccessAttempts
-              : gameLogic.player2PotSuccessAttempts,
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1PotSuccessShots++;
-              gameLogic.player1PotSuccessAttempts++;
-            } else {
-              gameLogic.player2PotSuccessShots++;
-              gameLogic.player2PotSuccessAttempts++;
-            }
-            gameLogic.saveState();
-          }),
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1PotSuccessAttempts++;
-            } else {
-              gameLogic.player2PotSuccessAttempts++;
-            }
-            gameLogic.saveState();
-          }),
-        ),
-        _buildShotStat(
-          "Long Pot Success",
-          isPlayer1
-              ? gameLogic.player1LongPotSuccessShots
-              : gameLogic.player2LongPotSuccessShots,
-          isPlayer1
-              ? gameLogic.player1LongPotSuccessAttempts
-              : gameLogic.player2LongPotSuccessAttempts,
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1LongPotSuccessShots++;
-              gameLogic.player1LongPotSuccessAttempts++;
-              gameLogic.player1PotSuccessShots++; // Успешный удар
-              gameLogic.player1PotSuccessAttempts++; // Общая попытка
-            } else {
-              gameLogic.player2LongPotSuccessShots++;
-              gameLogic.player2LongPotSuccessAttempts++;
-              gameLogic.player2PotSuccessShots++; // Успешный удар
-              gameLogic.player2PotSuccessAttempts++; // Общая попытка
-            }
-            gameLogic.saveState();
-          }),
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1LongPotSuccessAttempts++;
-              gameLogic.player1PotSuccessAttempts++; // Общая попытка
-            } else {
-              gameLogic.player2LongPotSuccessAttempts++;
-              gameLogic.player2PotSuccessAttempts++; // Общая попытка
-            }
-            gameLogic.saveState();
-          }),
-        ),
-        _buildShotStat(
-          "Rest Pot Success",
-          isPlayer1
-              ? gameLogic.player1RestPotSuccessShots
-              : gameLogic.player2RestPotSuccessShots,
-          isPlayer1
-              ? gameLogic.player1RestPotSuccessAttempts
-              : gameLogic.player2RestPotSuccessAttempts,
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1RestPotSuccessShots++;
-              gameLogic.player1RestPotSuccessAttempts++;
-              gameLogic.player1PotSuccessShots++; // Успешный удар
-              gameLogic.player1PotSuccessAttempts++; // Общая попытка
-            } else {
-              gameLogic.player2RestPotSuccessShots++;
-              gameLogic.player2RestPotSuccessAttempts++;
-              gameLogic.player2PotSuccessShots++; // Успешный удар
-              gameLogic.player2PotSuccessAttempts++; // Общая попытка
-            }
-            gameLogic.saveState();
-          }),
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1RestPotSuccessAttempts++;
-              gameLogic.player1PotSuccessAttempts++; // Общая попытка
-            } else {
-              gameLogic.player2RestPotSuccessAttempts++;
-              gameLogic.player2PotSuccessAttempts++; // Общая попытка
-            }
-            gameLogic.saveState();
-          }),
-        ),
-        _buildShotStat(
-          "Safety Success",
-          isPlayer1
-              ? gameLogic.player1SafetySuccessShots
-              : gameLogic.player2SafetySuccessShots,
-          isPlayer1
-              ? gameLogic.player1SafetySuccessAttempts
-              : gameLogic.player2SafetySuccessAttempts,
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1SafetySuccessShots++;
-              gameLogic.player1SafetySuccessAttempts++;
-            } else {
-              gameLogic.player2SafetySuccessShots++;
-              gameLogic.player2SafetySuccessAttempts++;
-            }
-            gameLogic.saveState();
-          }),
-          () => setState(() {
-            if (isPlayer1) {
-              gameLogic.player1SafetySuccessAttempts++;
-            } else {
-              gameLogic.player2SafetySuccessAttempts++;
-            }
-            gameLogic.saveState();
-          }),
-        ),
-      ],
-    );
-  }
-
-  /// Строит блок для одной строки статистики
-  Widget _buildShotStat(String label, int shots, int attempts,
-      Function onIncrease, Function onDecrease) {
+  Widget buildShotStat(String label, int shots, int attempts,
+      Function onIncrease, Function onDecrease,
+      {required double screenWidth, required double screenHeight}) {
+    // screenWidth и screenHeight теперь принимаются как параметры
     double successRate = (attempts > 0) ? (shots / attempts) * 100 : 0;
     return Column(
       children: [
         Text(
           "$label:",
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: screenWidth / 30,
+              fontWeight: FontWeight.bold), // Адаптивный размер шрифта
         ),
-        SizedBox(height: 5),
+        SizedBox(height: screenWidth / 50), // Адаптивный отступ
         Text(
           "$shots/$attempts → ${successRate.toStringAsFixed(1)}%",
-          style: TextStyle(fontSize: 17),
+          style:
+              TextStyle(fontSize: screenWidth / 27), // Адаптивный размер шрифта
         ),
-        SizedBox(height: 5),
+        SizedBox(height: screenWidth / 50), // Адаптивный отступ
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => onIncrease(),
-              child: Text("+", style: TextStyle(fontSize: 20)),
+              onPressed: () {
+                gameState.saveState();
+                onIncrease();
+              },
+              child: Text("+",
+                  style: TextStyle(
+                      fontSize: screenWidth / 20)), // Адаптивный размер шрифта
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(172, 84, 235, 89),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth / 15,
+                    vertical: screenWidth / 75), // Адаптивные отступы
               ),
             ),
-            SizedBox(width: 20),
+            SizedBox(width: screenWidth / 15), // Адаптивный отступ
             ElevatedButton(
-              onPressed: () => onDecrease(),
-              child: Text("-", style: TextStyle(fontSize: 20)),
+              onPressed: () {
+                gameState.saveState();
+                onDecrease();
+              },
+              child: Text("-",
+                  style: TextStyle(
+                      fontSize: screenWidth / 20)), // Адаптивный размер шрифта
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(155, 248, 45, 30),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth / 15,
+                    vertical: screenWidth / 75), // Адаптивные отступы
               ),
             ),
           ],
         ),
-        SizedBox(height: 3),
-      ],
-    );
-  }
-
-  /// Строит кнопку Undo
-  Widget _buildUndoButton() {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          widget.gameLogic.undo();
-        });
-      },
-      child: Text("Undo", style: TextStyle(fontSize: 18, color: Colors.black)),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromARGB(255, 160, 101, 232),
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-      ),
-    );
-  }
-
-  /// Строит блок "All Potted Balls"
-  Widget _buildAllPottedBalls() {
-    return Column(
-      children: [
-        Text(
-          "All Potted Balls:",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 5),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              "${widget.gameLogic.player1Name.text}: ${widget.gameLogic.getPlayer1TotalBalls()}",
-              style: TextStyle(fontSize: 13),
-            ),
-            Text(
-              "${widget.gameLogic.player2Name.text}: ${widget.gameLogic.getPlayer2TotalBalls()}",
-              style: TextStyle(fontSize: 13),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  /// Строит кнопки сброса
-  Widget _buildResetButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              widget.gameLogic.resetPlayer1();
-            });
-          },
-          child: Text("Reset P1"),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              widget.gameLogic.resetAll();
-            });
-          },
-          child: Text("Reset All"),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              widget.gameLogic.resetPlayer2();
-            });
-          },
-          child: Text("Reset P2"),
-        ),
+        SizedBox(height: screenWidth / 30), // Адаптивный отступ
       ],
     );
   }

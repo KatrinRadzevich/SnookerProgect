@@ -1,29 +1,44 @@
 import 'package:flutter/material.dart';
 
-class SnookerGameLogic {
-  // Контроллеры для имен игроков
-  final TextEditingController player1Name =
-      TextEditingController(text: "Player1");
-  final TextEditingController player2Name =
-      TextEditingController(text: "Player2");
+class SnookerGameState {
+  TextEditingController player1Name = TextEditingController(text: "Player1");
+  TextEditingController player2Name = TextEditingController(text: "Player2");
 
-  // Переменные для статистики игроков
-  int player1PotSuccessShots = 0, player1PotSuccessAttempts = 0;
-  int player2PotSuccessShots = 0, player2PotSuccessAttempts = 0;
+  int player1PotSuccessShots = 0;
+  int player1PotSuccessAttempts = 0;
+  int player2PotSuccessShots = 0;
+  int player2PotSuccessAttempts = 0;
 
-  int player1LongPotSuccessShots = 0, player1LongPotSuccessAttempts = 0;
-  int player2LongPotSuccessShots = 0, player2LongPotSuccessAttempts = 0;
+  int player1LongPotSuccessShots = 0;
+  int player1LongPotSuccessAttempts = 0;
+  int player2LongPotSuccessShots = 0;
+  int player2LongPotSuccessAttempts = 0;
 
-  int player1SafetySuccessShots = 0, player1SafetySuccessAttempts = 0;
-  int player2SafetySuccessShots = 0, player2SafetySuccessAttempts = 0;
+  int player1SafetySuccessShots = 0;
+  int player1SafetySuccessAttempts = 0;
+  int player2SafetySuccessShots = 0;
+  int player2SafetySuccessAttempts = 0;
 
-  int player1RestPotSuccessShots = 0, player1RestPotSuccessAttempts = 0;
-  int player2RestPotSuccessShots = 0, player2RestPotSuccessAttempts = 0;
+  int player1RestPotSuccessShots = 0;
+  int player1RestPotSuccessAttempts = 0;
+  int player2RestPotSuccessShots = 0;
+  int player2RestPotSuccessAttempts = 0;
 
-  // История изменений для функции Undo
   List<Map<String, dynamic>> history = [];
 
-  /// Сохраняет текущее состояние в историю
+  // Getters для общего количества шаров
+  int get player1TotalBalls =>
+      player1PotSuccessShots +
+      player1LongPotSuccessShots +
+      player1RestPotSuccessShots +
+      player1SafetySuccessShots;
+
+  int get player2TotalBalls =>
+      player2PotSuccessShots +
+      player2LongPotSuccessShots +
+      player2RestPotSuccessShots +
+      player2SafetySuccessShots;
+
   void saveState() {
     history.add({
       'player1PotSuccessShots': player1PotSuccessShots,
@@ -45,7 +60,6 @@ class SnookerGameLogic {
     });
   }
 
-  /// Отменяет последнее действие (аналог Ctrl+Z)
   void undo() {
     if (history.isNotEmpty) {
       Map<String, dynamic> lastState = history.removeLast();
@@ -72,7 +86,6 @@ class SnookerGameLogic {
     }
   }
 
-  /// Сбрасывает статистику для Player 1
   void resetPlayer1() {
     player1PotSuccessShots = 0;
     player1PotSuccessAttempts = 0;
@@ -84,7 +97,6 @@ class SnookerGameLogic {
     player1RestPotSuccessAttempts = 0;
   }
 
-  /// Сбрасывает статистику для Player 2
   void resetPlayer2() {
     player2PotSuccessShots = 0;
     player2PotSuccessAttempts = 0;
@@ -96,7 +108,6 @@ class SnookerGameLogic {
     player2RestPotSuccessAttempts = 0;
   }
 
-  /// Сбрасывает всю статистику и имена игроков
   void resetAll() {
     player1Name.text = "Player1";
     player2Name.text = "Player2";
@@ -104,19 +115,88 @@ class SnookerGameLogic {
     resetPlayer2();
   }
 
-  /// Возвращает общее количество сыгранных шаров для Player 1
-  int getPlayer1TotalBalls() {
-    return player1PotSuccessShots +
-        player1LongPotSuccessShots +
-        player1RestPotSuccessShots +
-        player1SafetySuccessShots;
+  // Методы для увеличения счетчиков, чтобы их вызывал Frontend
+  void increasePlayer1PotSuccess() {
+    player1PotSuccessShots++;
+    player1PotSuccessAttempts++;
   }
 
-  /// Возвращает общее количество сыгранных шаров для Player 2
-  int getPlayer2TotalBalls() {
-    return player2PotSuccessShots +
-        player2LongPotSuccessShots +
-        player2RestPotSuccessShots +
-        player2SafetySuccessShots;
+  void increasePlayer1PotAttempt() {
+    player1PotSuccessAttempts++;
+  }
+
+  void increasePlayer1LongPotSuccess() {
+    player1LongPotSuccessShots++;
+    player1LongPotSuccessAttempts++;
+    player1PotSuccessShots++; // Успешный удар
+    player1PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer1LongPotAttempt() {
+    player1LongPotSuccessAttempts++;
+    player1PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer1RestPotSuccess() {
+    player1RestPotSuccessShots++;
+    player1RestPotSuccessAttempts++;
+    player1PotSuccessShots++; // Успешный удар
+    player1PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer1RestPotAttempt() {
+    player1RestPotSuccessAttempts++;
+    player1PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer1SafetySuccess() {
+    player1SafetySuccessShots++;
+    player1SafetySuccessAttempts++;
+  }
+
+  void increasePlayer1SafetyAttempt() {
+    player1SafetySuccessAttempts++;
+  }
+
+  void increasePlayer2PotSuccess() {
+    player2PotSuccessShots++;
+    player2PotSuccessAttempts++;
+  }
+
+  void increasePlayer2PotAttempt() {
+    player2PotSuccessAttempts++;
+  }
+
+  void increasePlayer2LongPotSuccess() {
+    player2LongPotSuccessShots++;
+    player2LongPotSuccessAttempts++;
+    player2PotSuccessShots++; // Успешный удар
+    player2PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer2LongPotAttempt() {
+    player2LongPotSuccessAttempts++;
+    player2PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer2RestPotSuccess() {
+    player2RestPotSuccessShots++;
+    player2RestPotSuccessAttempts++;
+    player2PotSuccessShots++; // Успешный удар
+    player2PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer2RestPotAttempt() {
+    player2RestPotSuccessAttempts++;
+    player2PotSuccessAttempts++; // Общая попытка
+  }
+
+  void increasePlayer2SafetySuccess() {
+    player2SafetySuccessShots++;
+    player2SafetySuccessAttempts++;
+  }
+
+  void increasePlayer2SafetyAttempt() {
+    player2SafetySuccessAttempts++;
   }
 }
